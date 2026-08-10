@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>天不再借 —《维尼的终局》主题曲</title>
-<meta name="description" content="《天不再借》— 帝王史诗腔的政治寓言主题曲，致敬《向天再借五百年》。歌词、编曲方案与三个演唱版本。">
+<meta name="description" content="《天不再借》— 帝王史诗腔的政治寓言主题曲，致敬《向天再借五百年》。歌词随音乐逐句浮现的网页版 MV。">
 <style>
   :root{
     --ink:#0d0c0b;
@@ -12,62 +12,95 @@
     --paper:#e8e2d6;
     --paper-dim:#a89f8d;
     --gold:#c9a227;
-    --rust:#8c3a2b;
     --line:rgba(232,226,214,.14);
     --serif:"Songti SC","STSong","Noto Serif SC","Source Han Serif SC",serif;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  body{
-    margin:0;background:var(--ink);color:var(--paper);
-    font-family:var(--serif);line-height:1.9;
-    font-feature-settings:"palt" 1;
-  }
+  body{margin:0;background:var(--ink);color:var(--paper);
+    font-family:var(--serif);line-height:1.9;font-feature-settings:"palt" 1}
   .wrap{max-width:60rem;margin:0 auto;padding:0 1.5rem}
 
-  /* ---------- hero ---------- */
-  .hero{position:relative;min-height:82vh;display:flex;align-items:center;
-    justify-content:center;text-align:center;overflow:hidden;border-bottom:1px solid var(--line)}
-  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-    opacity:.34;filter:grayscale(.35) contrast(1.1)}
-  .hero::after{content:"";position:absolute;inset:0;
-    background:radial-gradient(ellipse at center,transparent 8%,rgba(13,12,11,.72) 62%,var(--ink) 100%)}
-  .hero .inner{position:relative;z-index:2;padding:3rem 1.5rem}
-  h1{font-size:clamp(3rem,13vw,7.5rem);margin:0;letter-spacing:.22em;
-    text-indent:.22em;font-weight:400;text-shadow:0 .2rem 2rem rgba(0,0,0,.85)}
-  .sub{color:var(--paper-dim);letter-spacing:.32em;text-indent:.32em;
-    font-size:clamp(.72rem,2.6vw,.9rem);margin-top:1.6rem}
-  .rule{width:3.5rem;height:1px;background:var(--gold);margin:2rem auto;opacity:.75}
-  .tagline{color:var(--paper-dim);font-size:clamp(.82rem,2.8vw,1rem);
-    max-width:32rem;margin:0 auto;line-height:2.1}
+  /* ============ MV 舞台 ============ */
+  .stage{position:relative;height:100svh;min-height:32rem;overflow:hidden;
+    border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+  .bg{position:absolute;inset:0}
+  .bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    opacity:0;transition:opacity 2.4s ease;filter:grayscale(.35) contrast(1.1);
+    transform:scale(1.06);animation:drift 40s ease-in-out infinite alternate}
+  .bg img.on{opacity:.4}
+  @keyframes drift{from{transform:scale(1.02) translate3d(0,0,0)}
+                   to{transform:scale(1.12) translate3d(-1.5%,-1.5%,0)}}
+  .vignette{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 4%,rgba(13,12,11,.74) 60%,var(--ink) 100%)}
 
-  /* ---------- sections ---------- */
+  .stage-inner{position:relative;z-index:2;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:4rem 1.5rem 7rem}
+
+  /* 标题卡 */
+  .titlecard{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+    opacity:0;transition:opacity 1.6s ease;pointer-events:none;padding:0 1.5rem}
+  .titlecard.on{opacity:1}
+  .titlecard h1{font-size:clamp(2.8rem,12vw,7rem);margin:0;font-weight:400;
+    letter-spacing:.22em;text-indent:.22em;text-shadow:0 .2rem 2rem rgba(0,0,0,.9)}
+  .titlecard .sub{color:var(--paper-dim);letter-spacing:.34em;text-indent:.34em;
+    font-size:clamp(.7rem,2.6vw,.88rem);margin-top:1.5rem}
+
+  /* 歌词 */
+  .lyricbox{max-width:44rem;min-height:9rem;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:1.2rem}
+  .line{font-size:clamp(1.35rem,4.6vw,2.5rem);line-height:1.75;margin:0;
+    opacity:0;transform:translateY(.7rem);transition:opacity .9s ease,transform .9s ease;
+    text-shadow:0 .15rem 1.6rem rgba(0,0,0,.9)}
+  .line.on{opacity:1;transform:none}
+  .line.next{font-size:clamp(.9rem,2.9vw,1.15rem);color:var(--paper-dim);opacity:0;
+    transition:opacity 1s ease}
+  .line.next.on{opacity:.5}
+
+  /* 段落名（竖排） */
+  .label{position:absolute;right:clamp(1rem,4vw,3rem);top:50%;transform:translateY(-50%);
+    writing-mode:vertical-rl;letter-spacing:.5em;color:var(--gold);
+    font-size:clamp(.65rem,2vw,.8rem);opacity:0;transition:opacity 1.2s ease}
+  .label.on{opacity:.75}
+
+  /* 播放按钮 */
+  .playbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    z-index:4;width:5.5rem;height:5.5rem;border-radius:50%;
+    border:1px solid rgba(232,226,214,.45);background:rgba(13,12,11,.42);
+    backdrop-filter:blur(3px);color:var(--paper);cursor:pointer;
+    display:grid;place-items:center;transition:opacity .5s ease,transform .3s ease,border-color .3s}
+  .playbtn:hover{transform:translate(-50%,-50%) scale(1.06);border-color:var(--gold)}
+  .playbtn svg{width:1.7rem;height:1.7rem;margin-left:.25rem}
+  .playbtn.hide{opacity:0;pointer-events:none}
+
+  /* 底部控制条 */
+  .bar{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:1.1rem clamp(1rem,4vw,2.5rem) 1.4rem;
+    background:linear-gradient(transparent,rgba(13,12,11,.9) 55%)}
+  .track{height:2px;background:rgba(232,226,214,.18);cursor:pointer;position:relative}
+  .track:hover{height:4px;margin-top:-1px}
+  .played{height:100%;width:0;background:var(--gold)}
+  .barfoot{display:flex;justify-content:space-between;align-items:center;
+    margin-top:.85rem;gap:1rem;flex-wrap:wrap}
+  .takes{display:flex;gap:.5rem}
+  .takes button{background:none;border:1px solid var(--line);color:var(--paper-dim);
+    font-family:inherit;font-size:.72rem;letter-spacing:.16em;padding:.42rem .85rem;
+    cursor:pointer;transition:.25s;border-radius:2px}
+  .takes button:hover{color:var(--paper);border-color:var(--paper-dim)}
+  .takes button[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
+  .time{color:var(--paper-dim);font-size:.72rem;letter-spacing:.1em;
+    font-variant-numeric:tabular-nums}
+
+  /* ============ 下方内容 ============ */
   section{padding:5.5rem 0;border-bottom:1px solid var(--line)}
   h2{font-size:1.05rem;letter-spacing:.42em;text-indent:.42em;color:var(--gold);
     font-weight:400;margin:0 0 3rem;text-align:center}
-
-  /* ---------- players ---------- */
-  .takes{display:grid;gap:1.25rem}
-  .take{background:var(--ink-2);border:1px solid var(--line);
-    border-radius:2px;padding:1.4rem 1.5rem}
-  .take-head{display:flex;justify-content:space-between;align-items:baseline;
-    gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
-  .take-name{letter-spacing:.16em}
-  .take-meta{color:var(--paper-dim);font-size:.76rem;letter-spacing:.08em;
-    font-variant-numeric:tabular-nums}
-  audio{width:100%;height:2.4rem}
-  .note{color:var(--paper-dim);font-size:.8rem;margin-top:2.5rem;
-    text-align:center;line-height:2}
-
-  /* ---------- lyrics ---------- */
   .lyrics{columns:2;column-gap:4rem;font-size:1.02rem}
   .stanza{break-inside:avoid;margin:0 0 2.6rem}
   .tag{display:block;color:var(--gold);font-size:.7rem;letter-spacing:.3em;
     text-indent:.3em;margin-bottom:.9rem;opacity:.85}
   .stanza p{margin:0}
-  .peak{color:#e8d9a8}
-
-  /* ---------- arrangement ---------- */
+  .note{color:var(--paper-dim);font-size:.8rem;margin-top:2.5rem;text-align:center;line-height:2}
   .spec{width:100%;border-collapse:collapse;font-size:.9rem}
   .spec td{padding:.85rem 0;border-bottom:1px solid var(--line);vertical-align:top}
   .spec td:first-child{color:var(--paper-dim);width:7rem;letter-spacing:.12em;
@@ -75,115 +108,85 @@
   .struct{margin-top:3rem;font-size:.86rem;color:var(--paper-dim);
     line-height:2.4;font-variant-numeric:tabular-nums}
   .struct b{color:var(--paper);font-weight:400}
-
-  /* ---------- gallery ---------- */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.6rem}
-  .grid img{width:100%;height:100%;aspect-ratio:16/9;object-fit:cover;
-    display:block;opacity:.82;transition:opacity .4s}
-  .grid img:hover{opacity:1}
-
+  .struct button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;
+    padding:0;text-align:left}
+  .struct button:hover{color:var(--gold)}
   footer{padding:4rem 0 5rem;text-align:center;color:var(--paper-dim);font-size:.76rem;line-height:2.2}
   footer a{color:var(--paper-dim)}
 
   @media (max-width:46rem){
     section{padding:4rem 0}
     .lyrics{columns:1}
-    .hero{min-height:70vh}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .bg img{animation:none}
+    .line,.titlecard,.label,.bg img{transition-duration:.01ms}
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <img src="img/t114.jpg" alt="">
-  <div class="inner">
+<div class="stage" id="stage">
+  <div class="bg" id="bg"></div>
+  <div class="vignette"></div>
+
+  <div class="titlecard" id="titlecard">
     <h1>天不再借</h1>
     <div class="sub">维尼的终局 · 主题曲</div>
-    <div class="rule"></div>
-    <p class="tagline">
-      致敬韩磊《向天再借五百年》。<br>
-      原曲问天「我真的还想再活五百年」——<br>
-      这首歌是它的回声与反面：天不肯借了，借期已满。
-    </p>
   </div>
-</header>
 
-<section>
-  <div class="wrap">
-    <h2>试 听</h2>
-    <div class="takes">
-      <div class="take">
-        <div class="take-head">
-          <span class="take-name">第一版</span>
-          <span class="take-meta">3′50″ · 主歌 −19.0 dB · 末段副歌 −14.7 dB · 落差 4.3 dB</span>
-        </div>
-        <audio controls preload="none" src="audio/v1.mp3"></audio>
-      </div>
-      <div class="take">
-        <div class="take-head">
-          <span class="take-name">第二版</span>
-          <span class="take-meta">3′50″ · 主歌 −21.1 dB · 末段副歌 −14.0 dB · 落差 7.1 dB</span>
-        </div>
-        <audio controls preload="none" src="audio/v2.mp3"></audio>
-      </div>
-      <div class="take">
-        <div class="take-head">
-          <span class="take-name">第三版</span>
-          <span class="take-meta">3′50″ · 主歌 −23.2 dB · 末段副歌 −14.9 dB · 落差 8.3 dB</span>
-        </div>
-        <audio controls preload="none" src="audio/v3.mp3"></audio>
-      </div>
+  <div class="label" id="label"></div>
+
+  <div class="stage-inner">
+    <div class="lyricbox">
+      <p class="line" id="cur"></p>
+      <p class="line next" id="nxt"></p>
     </div>
-    <p class="note">
-      三版同词同曲、不同随机种子。落差 = 主歌与末段副歌的响度差，数字越大，<br>
-      「主歌低沉克制、副歌爆发」的对比越强。重点听 1:20 与 2:38 之后的副歌。
-    </p>
   </div>
-</section>
+
+  <button class="playbtn" id="playbtn" aria-label="播放">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+
+  <div class="bar" id="bar">
+    <div class="track" id="track"><div class="played" id="played"></div></div>
+    <div class="barfoot">
+      <div class="takes" id="takes">
+        <button data-src="audio/v1.mp3" aria-pressed="false">第一版</button>
+        <button data-src="audio/v2.mp3" aria-pressed="false">第二版</button>
+        <button data-src="audio/v3.mp3" aria-pressed="true">第三版</button>
+      </div>
+      <div class="time"><span id="tcur">0:00</span> / <span id="tdur">3:50</span></div>
+    </div>
+  </div>
+
+  <audio id="audio" src="audio/v3.mp3" preload="metadata"></audio>
+</div>
 
 <section>
   <div class="wrap">
     <h2>歌 词</h2>
     <div class="lyrics">
       <div class="stanza"><span class="tag">主歌一</span><p>
-        踏着高墙　一重一重　冰冷的雕栏<br>
-        走过朱门　走过深宫　走过万人间<br>
-        以为把名字写进了日月和山川<br>
-        天光就该只照我这边</p></div>
-
+        踏着高墙　一重一重　冰冷的雕栏<br>走过朱门　走过深宫　走过万人间<br>
+        以为把名字写进了日月和山川<br>天光就该只照我这边</p></div>
       <div class="stanza"><span class="tag">主歌二</span><p>
-        数着更鼓　一声一声　敲碎的夜寒<br>
-        山河不语　风雷不语　谁在替我瞒<br>
-        史册翻页从来不问功过与恩怨<br>
-        只把王侯写成一缕烟</p></div>
-
+        数着更鼓　一声一声　敲碎的夜寒<br>山河不语　风雷不语　谁在替我瞒<br>
+        史册翻页从来不问功过与恩怨<br>只把王侯写成一缕烟</p></div>
       <div class="stanza"><span class="tag">预副歌</span><p>
-        有心锁住万里江山<br>
-        无奈天意从来不由人算</p></div>
-
-      <div class="stanza"><span class="tag">副歌</span><p class="peak">
-        大厦将倾　风未起　满城灯火先寒<br>
-        我真的还想再借五百年<br>
-        天不再借　不再借　借条烧成了烟<br>
-        九重宫阙　一夜换了天</p></div>
-
+        有心锁住万里江山<br>无奈天意从来不由人算</p></div>
+      <div class="stanza"><span class="tag">副歌</span><p>
+        大厦将倾　风未起　满城灯火先寒<br>我真的还想再借五百年<br>
+        天不再借　不再借　借条烧成了烟<br>九重宫阙　一夜换了天</p></div>
       <div class="stanza"><span class="tag">桥段</span><p>
-        谁在殿外磨亮了近身的那把刀剑<br>
-        谁把忠诚兑成活着　兑成一句谎言<br>
-        最后的敌人从来不在那城墙外面<br>
-        他就站在我的影子里边</p></div>
-
+        谁在殿外磨亮了近身的那把刀剑<br>谁把忠诚兑成活着　兑成一句谎言<br>
+        最后的敌人从来不在那城墙外面<br>他就站在我的影子里边</p></div>
       <div class="stanza"><span class="tag">预副歌二</span><p>
-        求过神明　拜过青天<br>
-        换不来龙椅底下　多半年</p></div>
-
+        求过神明　拜过青天<br>换不来龙椅底下　多半年</p></div>
       <div class="stanza"><span class="tag">尾声</span><p>
-        天不再借　借期已满<br>
-        大江东去　涛声依旧在人间</p></div>
+        天不再借　借期已满<br>大江东去　涛声依旧在人间</p></div>
     </div>
-    <p class="note">
-      全曲统一「言前辙」（-an / -ian / -uan），与原曲的「年 / 限 / 变 / 点」同辙。
-    </p>
+    <p class="note">全曲统一「言前辙」（-an / -ian / -uan），与原曲的「年 / 限 / 变 / 点」同辙。</p>
   </div>
 </section>
 
@@ -197,45 +200,179 @@
       <tr><td>音色</td><td>男中音，靠后的胸腔共鸣 + 蒙古长调式拖腔颤音</td></tr>
       <tr><td>时长</td><td>3′50″</td></tr>
     </table>
-    <div class="struct">
-      <b>0:00</b> 　前奏 · 埙独奏（空、荒）→ 大战鼓入 → 马头琴主题动机<br>
-      <b>0:20</b> 　主歌一 · 人声 + 拨弦低音 + 稀疏鼓点<br>
-      <b>0:44</b> 　主歌二 · 中提琴群铺底，鼓点加密<br>
-      <b>1:08</b> 　预副歌 · 弦乐上行，鼓花滚奏渐强<br>
-      <b>1:20</b> 　副歌 · 全奏：铜管 + 弦乐群 + 大鼓 + 男声合唱<br>
-      <b>1:48</b> 　间奏 · 铜管齐奏主题动机<br>
-      <b>2:02</b> 　桥段 · 突然抽空，只剩人声 + 单支箫 + 低频心跳鼓<br>
-      <b>2:26</b> 　预副歌二 · 弦乐从极弱推到极强<br>
-      <b>2:38</b> 　副歌 ×2 · 第二遍升全音，满编合唱团<br>
-      <b>3:34</b> 　尾声 · 人声渐弱，合唱 + 一记大锣，余响放尽
+    <div class="struct" id="struct">
+      <button data-t="0"><b>0:00</b> 　前奏 · 埙独奏（空、荒）→ 大战鼓入 → 马头琴主题动机</button><br>
+      <button data-t="20"><b>0:20</b> 　主歌一 · 人声 + 拨弦低音 + 稀疏鼓点</button><br>
+      <button data-t="44"><b>0:44</b> 　主歌二 · 中提琴群铺底，鼓点加密</button><br>
+      <button data-t="68"><b>1:08</b> 　预副歌 · 弦乐上行，鼓花滚奏渐强</button><br>
+      <button data-t="80"><b>1:20</b> 　副歌 · 全奏：铜管 + 弦乐群 + 大鼓 + 男声合唱</button><br>
+      <button data-t="108"><b>1:48</b> 　间奏 · 铜管齐奏主题动机</button><br>
+      <button data-t="122"><b>2:02</b> 　桥段 · 突然抽空，只剩人声 + 单支箫 + 低频心跳鼓</button><br>
+      <button data-t="146"><b>2:26</b> 　预副歌二 · 弦乐从极弱推到极强</button><br>
+      <button data-t="158"><b>2:38</b> 　副歌 ×2 · 第二遍升全音，满编合唱团</button><br>
+      <button data-t="214"><b>3:34</b> 　尾声 · 人声渐弱，合唱 + 一记大锣，余响放尽</button>
     </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>画 面</h2>
-    <div class="grid">
-      <img src="img/t008.jpg" alt="" loading="lazy">
-      <img src="img/t030.jpg" alt="" loading="lazy">
-      <img src="img/t055.jpg" alt="" loading="lazy">
-      <img src="img/t076.jpg" alt="" loading="lazy">
-      <img src="img/t092.jpg" alt="" loading="lazy">
-      <img src="img/t114.jpg" alt="" loading="lazy">
-      <img src="img/t136.jpg" alt="" loading="lazy">
-      <img src="img/t152.jpg" alt="" loading="lazy">
-      <img src="img/t200.jpg" alt="" loading="lazy">
-      <img src="img/t224.jpg" alt="" loading="lazy">
-    </div>
+    <p class="note">点任意一行，音乐直接跳到那一段。</p>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
     音频由 <a href="https://github.com/ace-step/ACE-Step-1.5">ACE-Step 1.5</a> 本地生成 · 词曲与编曲方案为原创<br>
-    画面由 <code>render.py</code> 渲染 · 三版为同词同曲的不同随机种子
+    三版为同词同曲的不同随机种子 · 画面关键帧由 <code>render.py</code> 渲染
   </div>
 </footer>
 
+<script>
+(function(){
+  "use strict";
+  var CUES = [
+    [20,6,"主歌一","踏着高墙　一重一重　冰冷的雕栏"],
+    [26,6,"主歌一","走过朱门　走过深宫　走过万人间"],
+    [32,6,"主歌一","以为把名字写进了日月和山川"],
+    [38,6,"主歌一","天光就该只照我这边"],
+    [44,6,"主歌二","数着更鼓　一声一声　敲碎的夜寒"],
+    [50,6,"主歌二","山河不语　风雷不语　谁在替我瞒"],
+    [56,6,"主歌二","史册翻页从来不问功过与恩怨"],
+    [62,6,"主歌二","只把王侯写成一缕烟"],
+    [68,6,"预副歌","有心锁住万里江山"],
+    [74,6,"预副歌","无奈天意从来不由人算"],
+    [80,7,"副歌","大厦将倾　风未起　满城灯火先寒"],
+    [87,7,"副歌","我真的还想再借五百年"],
+    [94,7,"副歌","天不再借　不再借　借条烧成了烟"],
+    [101,7,"副歌","九重宫阙　一夜换了天"],
+    [122,6,"桥段","谁在殿外磨亮了近身的那把刀剑"],
+    [128,6,"桥段","谁把忠诚兑成活着　兑成一句谎言"],
+    [134,6,"桥段","最后的敌人从来不在那城墙外面"],
+    [140,6,"桥段","他就站在我的影子里边"],
+    [146,6,"预副歌","求过神明　拜过青天"],
+    [152,6,"预副歌","换不来龙椅底下　多半年"],
+    [158,7,"副歌","大厦将倾　风未起　满城灯火先寒"],
+    [165,7,"副歌","我真的还想再借五百年"],
+    [172,7,"副歌","天不再借　不再借　借条烧成了烟"],
+    [179,7,"副歌","九重宫阙　一夜换了天"],
+    [186,7,"副歌","大厦将倾　风未起　满城灯火先寒"],
+    [193,7,"副歌","我真的还想再借五百年"],
+    [200,7,"副歌","天不再借　不再借　借条烧成了烟"],
+    [207,7,"副歌","九重宫阙　一夜换了天"],
+    [214,7,"尾声","天不再借　借期已满"],
+    [221,8,"尾声","大江东去　涛声依旧在人间"]
+  ];
+  var STILLS = [8,30,55,76,92,114,136,152,200,224];
+  var TITLE = [3,17];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var audio=$("audio"), bg=$("bg"), cur=$("cur"), nxt=$("nxt"), label=$("label"),
+      titlecard=$("titlecard"), playbtn=$("playbtn"), played=$("played"),
+      track=$("track"), tcur=$("tcur"), tdur=$("tdur"), stage=$("stage");
+
+  // 背景层
+  var imgs = STILLS.map(function(s){
+    var im=document.createElement("img");
+    im.src="img/t"+String(s).padStart(3,"0")+".jpg";
+    im.alt=""; im.loading = s>30 ? "lazy" : "eager";
+    im.style.animationDelay = (-(s%40))+"s";
+    bg.appendChild(im); return im;
+  });
+  var shown=-1;
+  function paintBg(t){
+    var idx=0;
+    for(var i=0;i<STILLS.length;i++){ if(t>=STILLS[i]-8) idx=i; }
+    if(idx===shown) return;
+    shown=idx;
+    imgs.forEach(function(im,i){ im.classList.toggle("on", i===idx); });
+  }
+
+  function fmt(s){
+    if(!isFinite(s)) return "0:00";
+    s=Math.max(0,Math.floor(s));
+    return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  }
+
+  var curIdx=-1;
+  function paintLyrics(t){
+    var i=-1;
+    for(var k=0;k<CUES.length;k++){
+      if(t>=CUES[k][0] && t<CUES[k][0]+CUES[k][1]){ i=k; break; }
+    }
+    if(i===curIdx) return;
+    curIdx=i;
+    if(i<0){
+      cur.classList.remove("on"); nxt.classList.remove("on"); label.classList.remove("on");
+      return;
+    }
+    cur.textContent=CUES[i][3]; cur.classList.add("on");
+    label.textContent=CUES[i][2]; label.classList.add("on");
+    var n=CUES[i+1];
+    if(n && n[0]-(CUES[i][0]+CUES[i][1])<4){ nxt.textContent=n[3]; nxt.classList.add("on"); }
+    else { nxt.classList.remove("on"); }
+  }
+
+  function paintTitle(t){
+    titlecard.classList.toggle("on", t>=TITLE[0] && t<TITLE[1]);
+  }
+
+  function frame(){
+    var t=audio.currentTime;
+    paintBg(t); paintLyrics(t); paintTitle(t);
+    played.style.width=(t/(audio.duration||230)*100)+"%";
+    tcur.textContent=fmt(t);
+    if(!audio.paused) requestAnimationFrame(frame);
+  }
+
+  function toggle(){
+    if(audio.paused){ audio.play().catch(function(){}); }
+    else { audio.pause(); }
+  }
+
+  audio.addEventListener("play", function(){
+    playbtn.classList.add("hide"); requestAnimationFrame(frame);
+  });
+  audio.addEventListener("pause", function(){ playbtn.classList.remove("hide"); });
+  audio.addEventListener("ended", function(){ playbtn.classList.remove("hide"); });
+  audio.addEventListener("loadedmetadata", function(){ tdur.textContent=fmt(audio.duration); });
+  audio.addEventListener("timeupdate", function(){ if(audio.paused) frame(); });
+
+  playbtn.addEventListener("click", function(e){ e.stopPropagation(); toggle(); });
+  stage.addEventListener("click", function(e){
+    if(e.target.closest("#bar")) return;
+    toggle();
+  });
+
+  track.addEventListener("click", function(e){
+    var r=track.getBoundingClientRect();
+    audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*(audio.duration||230);
+    curIdx=-1; shown=-1; frame();
+  });
+
+  $("takes").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    e.stopPropagation();
+    var was=!audio.paused, t=audio.currentTime;
+    [].forEach.call(this.querySelectorAll("button"), function(x){
+      x.setAttribute("aria-pressed", String(x===b));
+    });
+    audio.src=b.dataset.src;
+    audio.currentTime=t;
+    if(was) audio.play().catch(function(){});
+  });
+
+  $("struct").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    audio.currentTime=parseFloat(b.dataset.t);
+    curIdx=-1; shown=-1;
+    if(audio.paused) audio.play().catch(function(){});
+    stage.scrollIntoView({behavior:"smooth"});
+  });
+
+  document.addEventListener("keydown", function(e){
+    if(e.code==="Space" && !/INPUT|TEXTAREA|BUTTON/.test(document.activeElement.tagName)){
+      e.preventDefault(); toggle();
+    }
+  });
+
+  paintBg(0); frame();
+})();
+</script>
 </body>
 </html>
