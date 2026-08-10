@@ -153,15 +153,15 @@
     <div class="track" id="track"><div class="played" id="played"></div></div>
     <div class="barfoot">
       <div class="takes" id="takes">
-        <button data-src="audio/v1.mp3" aria-pressed="false">第一版</button>
-        <button data-src="audio/v2.mp3" aria-pressed="false">第二版</button>
-        <button data-src="audio/v3.mp3" aria-pressed="true">第三版</button>
+        <button data-v="v1" aria-pressed="true" title="30/30 句时间为实测">第一版</button>
+        <button data-v="v2" aria-pressed="false" title="24/30 句实测；该版未演唱桥段，故不显示桥段歌词">第二版</button>
+        <button data-v="v3" aria-pressed="false" title="28/30 句实测">第三版</button>
       </div>
       <div class="time"><span id="tcur">0:00</span> / <span id="tdur">3:50</span></div>
     </div>
   </div>
 
-  <audio id="audio" src="audio/v3.mp3" preload="metadata"></audio>
+  <audio id="audio" src="audio/v1.mp3" preload="metadata"></audio>
 </div>
 
 <section>
@@ -203,17 +203,20 @@
     </table>
     <div class="struct" id="struct">
       <button data-t="0"><b>0:00</b> 　前奏 · 埙独奏（空、荒）→ 大战鼓入 → 马头琴主题动机</button><br>
-      <button data-t="20"><b>0:20</b> 　主歌一 · 人声 + 拨弦低音 + 稀疏鼓点</button><br>
-      <button data-t="44"><b>0:44</b> 　主歌二 · 中提琴群铺底，鼓点加密</button><br>
-      <button data-t="68"><b>1:08</b> 　预副歌 · 弦乐上行，鼓花滚奏渐强</button><br>
-      <button data-t="80"><b>1:20</b> 　副歌 · 全奏：铜管 + 弦乐群 + 大鼓 + 男声合唱</button><br>
+      <button data-cue="0" data-t="20"><b>0:20</b> 　主歌一 · 人声 + 拨弦低音 + 稀疏鼓点</button><br>
+      <button data-cue="4" data-t="44"><b>0:44</b> 　主歌二 · 中提琴群铺底，鼓点加密</button><br>
+      <button data-cue="8" data-t="68"><b>1:08</b> 　预副歌 · 弦乐上行，鼓花滚奏渐强</button><br>
+      <button data-cue="10" data-t="80"><b>1:20</b> 　副歌 · 全奏：铜管 + 弦乐群 + 大鼓 + 男声合唱</button><br>
       <button data-t="108"><b>1:48</b> 　间奏 · 铜管齐奏主题动机</button><br>
-      <button data-t="122"><b>2:02</b> 　桥段 · 突然抽空，只剩人声 + 单支箫 + 低频心跳鼓</button><br>
-      <button data-t="146"><b>2:26</b> 　预副歌二 · 弦乐从极弱推到极强</button><br>
-      <button data-t="158"><b>2:38</b> 　副歌 ×2 · 第二遍升全音，满编合唱团</button><br>
-      <button data-t="214"><b>3:34</b> 　尾声 · 人声渐弱，合唱 + 一记大锣，余响放尽</button>
+      <button data-cue="14" data-t="122"><b>2:02</b> 　桥段 · 突然抽空，只剩人声 + 单支箫 + 低频心跳鼓</button><br>
+      <button data-cue="18" data-t="146"><b>2:26</b> 　预副歌二 · 弦乐从极弱推到极强</button><br>
+      <button data-cue="20" data-t="158"><b>2:38</b> 　副歌 ×2 · 第二遍升全音，满编合唱团</button><br>
+      <button data-cue="28" data-t="214"><b>3:34</b> 　尾声 · 人声渐弱，合唱 + 一记大锣，余响放尽</button>
     </div>
-    <p class="note">点任意一行，音乐直接跳到那一段。</p>
+    <p class="note">
+      以上是编曲<strong>方案</strong>时间。实际演唱与方案有出入，且三版各不相同——<br>
+      点任意一行，会跳到<strong>当前版本实测</strong>的那一段，而不是方案时间。
+    </p>
   </div>
 </section>
 
@@ -224,50 +227,21 @@
   </div>
 </footer>
 
+<script src="cues.js"></script>
 <script>
 (function(){
   "use strict";
-  var CUES = [
-    [20,6,"主歌一","踏着高墙　一重一重　冰冷的雕栏"],
-    [26,6,"主歌一","走过朱门　走过深宫　走过万人间"],
-    [32,6,"主歌一","以为把名字写进了日月和山川"],
-    [38,6,"主歌一","天光就该只照我这边"],
-    [44,6,"主歌二","数着更鼓　一声一声　敲碎的夜寒"],
-    [50,6,"主歌二","山河不语　风雷不语　谁在替我瞒"],
-    [56,6,"主歌二","史册翻页从来不问功过与恩怨"],
-    [62,6,"主歌二","只把王侯写成一缕烟"],
-    [68,6,"预副歌","有心锁住万里江山"],
-    [74,6,"预副歌","无奈天意从来不由人算"],
-    [80,7,"副歌","大厦将倾　风未起　满城灯火先寒"],
-    [87,7,"副歌","我真的还想再借五百年"],
-    [94,7,"副歌","天不再借　不再借　借条烧成了烟"],
-    [101,7,"副歌","九重宫阙　一夜换了天"],
-    [122,6,"桥段","谁在殿外磨亮了近身的那把刀剑"],
-    [128,6,"桥段","谁把忠诚兑成活着　兑成一句谎言"],
-    [134,6,"桥段","最后的敌人从来不在那城墙外面"],
-    [140,6,"桥段","他就站在我的影子里边"],
-    [146,6,"预副歌","求过神明　拜过青天"],
-    [152,6,"预副歌","换不来龙椅底下　多半年"],
-    [158,7,"副歌","大厦将倾　风未起　满城灯火先寒"],
-    [165,7,"副歌","我真的还想再借五百年"],
-    [172,7,"副歌","天不再借　不再借　借条烧成了烟"],
-    [179,7,"副歌","九重宫阙　一夜换了天"],
-    [186,7,"副歌","大厦将倾　风未起　满城灯火先寒"],
-    [193,7,"副歌","我真的还想再借五百年"],
-    [200,7,"副歌","天不再借　不再借　借条烧成了烟"],
-    [207,7,"副歌","九重宫阙　一夜换了天"],
-    [214,7,"尾声","天不再借　借期已满"],
-    [221,8,"尾声","大江东去　涛声依旧在人间"]
-  ];
-  var STILLS = [8,30,55,76,92,114,136,152,200,224];
-  var TITLE = [3,17];
+  // 每句的时间来自 align.py 对音频的实测（见 cues.js / align_report.json）
+  var TAKE = "v1";
+  var CUES = (window.CUES && window.CUES[TAKE]) || [];
+  var STILLS = [8,30,55,76,92,114,136,152,200,224];   // 文件名用的秒数，仅作图片编号
+  var SCENE_AT = [0,4,8,10,14,18,20,24,28];           // 换背景的句序（段落边界）
 
   var $ = function(id){ return document.getElementById(id); };
   var audio=$("audio"), bg=$("bg"), cur=$("cur"), nxt=$("nxt"), label=$("label"),
       titlecard=$("titlecard"), playbtn=$("playbtn"), played=$("played"),
       track=$("track"), tcur=$("tcur"), tdur=$("tdur"), stage=$("stage");
 
-  // 背景层
   var imgs = STILLS.map(function(s){
     var im=document.createElement("img");
     im.src="img/t"+String(s).padStart(3,"0")+".jpg";
@@ -275,13 +249,20 @@
     im.style.animationDelay = (-(s%40))+"s";
     bg.appendChild(im); return im;
   });
-  var shown=-1;
-  function paintBg(t){
-    var idx=0;
-    for(var i=0;i<STILLS.length;i++){ if(t>=STILLS[i]-8) idx=i; }
-    if(idx===shown) return;
-    shown=idx;
-    imgs.forEach(function(im,i){ im.classList.toggle("on", i===idx); });
+
+  function sceneFor(cueIdx){
+    if(cueIdx<0) return 0;
+    var n=0;
+    for(var i=0;i<SCENE_AT.length;i++){ if(cueIdx>=SCENE_AT[i]) n=i+1; }
+    return Math.min(n, imgs.length-1);
+  }
+
+  var shownScene=-1;
+  function paintBg(cueIdx){
+    var s=sceneFor(cueIdx);
+    if(s===shownScene) return;
+    shownScene=s;
+    imgs.forEach(function(im,i){ im.classList.toggle("on", i===s); });
   }
 
   function fmt(s){
@@ -290,32 +271,44 @@
     return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
   }
 
-  var curIdx=-1;
-  function paintLyrics(t){
-    var i=-1;
+  // 标题卡：从 3 秒到第一句进来前 2 秒
+  function titleWindow(){
+    var first = CUES.length ? CUES[0][1] : 20;
+    return [3, Math.max(6, Math.min(first-2, 22))];
+  }
+
+  var curIdx=-2;
+  function activeCue(t){
     for(var k=0;k<CUES.length;k++){
-      if(t>=CUES[k][0] && t<CUES[k][0]+CUES[k][1]){ i=k; break; }
+      if(t>=CUES[k][1] && t<CUES[k][1]+CUES[k][2]) return k;
     }
+    return -1;
+  }
+
+  function paintLyrics(t){
+    var i=activeCue(t);
     if(i===curIdx) return;
     curIdx=i;
+    paintBg(i<0 ? (t>(CUES.length?CUES[0][1]:20) ? 0 : -1) : i);
     if(i<0){
       cur.classList.remove("on"); nxt.classList.remove("on"); label.classList.remove("on");
       return;
     }
-    cur.textContent=CUES[i][3]; cur.classList.add("on");
-    label.textContent=CUES[i][2]; label.classList.add("on");
+    cur.textContent=CUES[i][4]; cur.classList.add("on");
+    label.textContent=CUES[i][3]; label.classList.add("on");
     var n=CUES[i+1];
-    if(n && n[0]-(CUES[i][0]+CUES[i][1])<4){ nxt.textContent=n[3]; nxt.classList.add("on"); }
+    if(n && n[1]-(CUES[i][1]+CUES[i][2])<4){ nxt.textContent=n[4]; nxt.classList.add("on"); }
     else { nxt.classList.remove("on"); }
   }
 
   function paintTitle(t){
-    titlecard.classList.toggle("on", t>=TITLE[0] && t<TITLE[1]);
+    var w=titleWindow();
+    titlecard.classList.toggle("on", t>=w[0] && t<w[1]);
   }
 
   function frame(){
     var t=audio.currentTime;
-    paintBg(t); paintLyrics(t); paintTitle(t);
+    paintLyrics(t); paintTitle(t);
     played.style.width=(t/(audio.duration||230)*100)+"%";
     tcur.textContent=fmt(t);
     if(!audio.paused) requestAnimationFrame(frame);
@@ -343,7 +336,7 @@
   track.addEventListener("click", function(e){
     var r=track.getBoundingClientRect();
     audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*(audio.duration||230);
-    curIdx=-1; shown=-1; frame();
+    curIdx=-2; shownScene=-1; frame();
   });
 
   $("takes").addEventListener("click", function(e){
@@ -353,15 +346,23 @@
     [].forEach.call(this.querySelectorAll("button"), function(x){
       x.setAttribute("aria-pressed", String(x===b));
     });
-    audio.src=b.dataset.src;
+    TAKE=b.dataset.v;
+    CUES=(window.CUES && window.CUES[TAKE]) || [];
+    audio.src="audio/"+TAKE+".mp3";
     audio.currentTime=t;
+    curIdx=-2; shownScene=-1;
     if(was) audio.play().catch(function(){});
+    frame();
   });
 
+  // 时间轴按钮标的是「第几句」，跳到当前版本实测的那一刻
   $("struct").addEventListener("click", function(e){
     var b=e.target.closest("button"); if(!b) return;
-    audio.currentTime=parseFloat(b.dataset.t);
-    curIdx=-1; shown=-1;
+    var ci=parseInt(b.dataset.cue,10);
+    var hit=null;
+    for(var k=0;k<CUES.length;k++){ if(CUES[k][0]>=ci){ hit=CUES[k]; break; } }
+    audio.currentTime = hit ? Math.max(0, hit[1]-1.2) : parseFloat(b.dataset.t||0);
+    curIdx=-2; shownScene=-1;
     if(audio.paused) audio.play().catch(function(){});
     stage.scrollIntoView({behavior:"smooth"});
   });
@@ -372,7 +373,7 @@
     }
   });
 
-  paintBg(0); frame();
+  paintBg(-1); frame();
 })();
 </script>
 </body>

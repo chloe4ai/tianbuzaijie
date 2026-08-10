@@ -1,0 +1,23 @@
+{
+ "v1": {
+  "heard_chars": 357,
+  "anchored": 30,
+  "interp": []
+ },
+ "v2": {
+  "heard_chars": 297,
+  "anchored": 24,
+  "interp": [
+   0,
+   20
+  ]
+ },
+ "v3": {
+  "heard_chars": 360,
+  "anchored": 28,
+  "interp": [
+   28,
+   29
+  ]
+ }
+}
