@@ -2,3 +2,7 @@
 *.mp4
 .venv/
 __pycache__/
+stills/
+transcript_*.json
+verse1_probe.json
+cues_v*.json

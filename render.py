@@ -227,7 +227,7 @@ class Renderer:
         self.sprites = [TextSprite(c["text"], self.f_lyric, maxw) for c in tl["cues"]]
         t = tl["title"]
         self.sp_title = TextSprite(t["main"], self.f_title, maxw)
-        self.sp_sub = TextSprite(t["sub"], self.f_sub, maxw)
+        self.sp_sub = TextSprite(t["sub"], self.f_sub, maxw) if (t.get("sub") or "").strip() else None
         self.labels = {}
         for c in tl["cues"]:
             if c["label"] not in self.labels:
@@ -238,14 +238,18 @@ class Renderer:
         self.sections = sorted(tl["sections"], key=lambda s: s["t"])
 
     def _make_seal(self):
-        """右下角朱文印：终局（红框 + 红字，框内留白）"""
+        """右下角朱文印（红框 + 红字，框内留白）。印文取自 timeline.json 的 seal；
+        留空或缺省则不画印章。"""
+        text = (self.tl.get("seal") or "").strip()
+        if not text:
+            return None
         s = 126
         img = Image.new("L", (s, s), 0)
         d = ImageDraw.Draw(img)
         d.rounded_rectangle([2, 2, s - 3, s - 3], radius=6, outline=255, width=7)
         f = font(FONT_BLACK, 44)
         y = 14
-        for ch in "终局":
+        for ch in text[:2]:
             b = d.textbbox((0, 0), ch, font=f)
             cw, chh = b[2] - b[0], b[3] - b[1]
             d.text((s // 2 - cw // 2 - b[0], y - b[1]), ch, font=f, fill=255)
@@ -390,13 +394,13 @@ class Renderer:
             col = np.array(SCENES["intro"]["text"], np.float32)
             self._blit(img, self.sp_title, (H - self.sp_title.h) // 2 - 70, fade,
                        col, reveal=min(1.0, lt / 2.6))
-            if lt > 1.6:
+            if lt > 1.6 and self.sp_sub is not None:
                 f2 = min(1.0, (lt - 1.6) / 1.6) * min(1.0, (T["d"] - lt) / 2.4)
                 self._blit(img, self.sp_sub, (H - self.sp_title.h) // 2 + self.sp_title.h - 40,
                            f2 * 0.85, col, reveal=1.0)
 
         # ---- 印章（副歌起出现）
-        if t > 78:
+        if t > 78 and self.seal is not None:
             sa = min(1.0, (t - 78) / 2.5) * 0.88
             sh, sw = self.seal.shape
             y0, x0 = H - sh - 74, W - sw - 84
